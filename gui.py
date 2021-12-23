@@ -55,7 +55,7 @@ class Gui:
 
     def work(self):
         self._display_status("Try to work")
-        self.root.bell()
+        self._put_window_to_front(put_back=False)
 
     def work_end(self):
         self._display_status("Session finished")
