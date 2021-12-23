@@ -31,6 +31,8 @@ class Gui:
 
         btn_start = Button(text="Start", width=6, height=2, command=self._on_start)
         btn_start.grid(column=0, row=1, sticky="e")
+        btn_start.focus()
+        self.btn_start = btn_start
 
         btn_reset = Button(text="Reset", width=6, height=2, command=self._on_reset)
         btn_reset.grid(column=2, row=1, sticky="w")
@@ -57,19 +59,16 @@ class Gui:
 
     def work_end(self):
         self._display_status("Session finished")
-        self.root.bell()
         self._put_window_to_front(put_back=False)
 
     def pause(self):
         self.rounds += 1
         self._display_rounds()
         self._display_status("Have a break")
-        self.root.bell()
         self._put_window_to_front()
 
     def pause_end(self):
         self._display_status("Break over")
-        self.root.bell()
         self._put_window_to_front(put_back=False)
 
     def stop(self):
@@ -77,6 +76,7 @@ class Gui:
         self._display_rounds()
         self._display_status("Start")
         self.root.bell()
+        self.btn_start.focus()
 
     def _on_start(self):
         if self.on_start is not None:
@@ -101,7 +101,11 @@ class Gui:
         self.canvas.itemconfigure(self.countdown_text, text=countdown)
 
     def _put_window_to_front(self, put_back=True):
+        self.root.bell()
+        self.root.after(1, lambda: self.root.focus_force())
+        self.root.after(2, lambda: self.btn_start.focus_force())
         self.root.attributes('-topmost', True)
+        self.root.update()
         if put_back:
             self.root.after_idle(self.root.attributes, '-topmost', False)
 
